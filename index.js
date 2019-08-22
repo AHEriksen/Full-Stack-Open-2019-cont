@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 
 let persons = [
   {
@@ -46,6 +49,29 @@ app.get('/api/persons/:id', (req, res) => {
   else
     res.status(404).end();
 })
+
+const generateId = () => {
+  return Math.floor(1 + Math.random() * 100000);
+}
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body;
+  if (!body.name) {
+    return res.status(400).json({error: 'content missing'});
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId()
+  }
+
+  console.log(person);
+
+  persons = persons.concat(person);
+  console.log(persons);
+  res.json(person);
+});
 
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id);
