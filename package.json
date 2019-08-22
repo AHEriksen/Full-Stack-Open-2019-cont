@@ -1,0 +1,27 @@
+{
+  "name": "phonebook-backend",
+  "version": "0.0.1",
+  "description": "\"\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "\"echo \\\"Error: no test specified\\\" && exit 1\"",
+    "watch": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AHEriksen/Full-Stack-Open-2019-cont.git"
+  },
+  "author": "ahoer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AHEriksen/Full-Stack-Open-2019-cont/issues"
+  },
+  "homepage": "https://github.com/AHEriksen/Full-Stack-Open-2019-cont#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
