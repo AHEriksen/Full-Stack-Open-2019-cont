@@ -3,9 +3,6 @@ const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-app.use(bodyParser.json());
-app.use(morgan('tiny'));
-
 let persons = [
   {
     name: "Arto Hellas",
@@ -28,6 +25,11 @@ let persons = [
     id: 4
   }
 ];
+
+morgan.token('data', req => JSON.stringify(req.body));
+app.use(bodyParser.json());
+app.use(morgan(':method :url :status :res[content-length] - \
+:response-time ms :data'));
 
 app.get('/info', (req, res) => {
   const date = Date();
@@ -75,10 +77,7 @@ app.post('/api/persons', (req, res) => {
     id: generateId()
   }
 
-  console.log(person);
-
   persons = persons.concat(person);
-  console.log(persons);
   res.json(person);
 });
 
@@ -90,5 +89,5 @@ app.delete('/api/persons/:id', (req, res) => {
 
 const PORT = 3001;
 app.listen(PORT, () => {
-  `Server running on port ${PORT}`;
+  console.log(`Server running on port ${PORT}`);
 })
