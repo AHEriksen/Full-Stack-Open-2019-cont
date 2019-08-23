@@ -34,6 +34,10 @@ morgan.token('data', req => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - \
 :response-time ms :data'));
 
+app.get('', (req, res) => {
+  res.send('root');
+})
+
 app.get('/info', (req, res) => {
   const date = Date();
   const message = `Phonebook has info for ${persons.length} people`;
