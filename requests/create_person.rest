@@ -1,4 +1,4 @@
-post http://localhost:3001/api/persons
+post https://immense-sierra-49383.herokuapp.com/api/persons
 Content-Type: application/json 
 
 {
