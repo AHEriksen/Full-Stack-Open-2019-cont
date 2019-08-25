@@ -82,14 +82,14 @@ app.post('/api/persons', (req, res) => {
     return res.status(409).json({error: 'person already in phonebook'})
   }
 
-  const person = {
+  const person = new Person({
     name: body.name,
     number: body.number,
     id: generateId()
-  }
+  });
 
-  persons = persons.concat(person);
-  res.json(person);
+  person.save()
+    .then(savedPerson => res.json(savedPerson.toJSON()));
 });
 
 app.delete('/api/persons/:id', (req, res) => {
