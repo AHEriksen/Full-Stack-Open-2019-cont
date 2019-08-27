@@ -53,13 +53,19 @@ app.get('', (req, res) => {
 
 app.get('/info', (req, res) => {
   const date = Date();
-  const message = `Phonebook has info for ${persons.length} people`;
-  res.send(`<div>
-              <p>${message}</p>
-              <p>${date}</p>
-            </div>`
-          )
-})
+
+  Person.count({})
+    .then(result => {
+      const message = `Phonebook has info for ${result} people`;
+      res.send(
+        `<div>
+          <p>${message}</p>
+          <p>${date}</p>
+        </div>`
+      );
+    })
+    .catch(e => next(e));
+});
 
 app.get('/api/persons', (req, res) => {
   Person.find({})
@@ -67,13 +73,17 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find(person => person.id === id);
-  if (person)
-    res.json(person);
-  else
-    res.status(404).end();
-})
+  Person.findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(person.toJSON());
+      }
+      else {
+        res.status(404).end();
+      }
+    })
+    .catch(e => next(e));
+});
 
 const generateId = () => {
   return Math.floor(1 + Math.random() * 100000);
