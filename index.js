@@ -37,16 +37,6 @@ morgan.token('data', req => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - \
 :response-time ms :data'));
 
-const errorHandler = (e, req, res, next) => {
-  console.log(e);
-
-  if (e.name === 'CastError' && e.kind === 'ObjectId') {
-    return res.status(400).send({error: 'malformatted id'});
-  }
-  
-  next(e);
-}
-
 app.get('', (req, res) => {
   res.send('root');
 })
@@ -89,7 +79,7 @@ const generateId = () => {
   return Math.floor(1 + Math.random() * 100000);
 }
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body;
   const alreadyExists = persons.find(person => person.name === body.name);
   if (!body.name) {
@@ -109,10 +99,12 @@ app.post('/api/persons', (req, res) => {
   });
 
   person.save()
-    .then(savedPerson => res.json(savedPerson.toJSON()));
+    .then(savedPerson => savedPerson.toJSON())
+    .then(savedFormattedPerson => res.json(savedFormattedPerson))
+    .catch(e => next(e))
 });
 
-app.put('/api/persons/:id', (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => {
   const body = req.body;
 
   const person = {
@@ -121,9 +113,8 @@ app.put('/api/persons/:id', (req, res) => {
   };
 
   Person.findByIdAndUpdate(req.params.id, person, {new: true})
-    .then(updatedPerson => {
-      res.json(updatedPerson.toJSON());
-    })
+    .then(updatedPerson => updatedPerson.toJSON())
+    .then(updatedAndFormattedPerson => res.json(updatedAndFormattedPerson))
     .catch(e => next(e));
 });
 
@@ -134,6 +125,26 @@ app.delete('/api/persons/:id', (req, res, next) => {
     })
     .catch(e => next(e));
 });
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' });
+};
+
+app.use(unknownEndpoint);
+
+const errorHandler = (e, req, res, next) => {
+  console.log(e);
+
+  if (e.name === 'CastError' && e.kind === 'ObjectId') {
+    return res.status(400).send({error: 'malformatted id'});
+  }
+  else if (e.name === 'ValidationError')
+    return res.status(400).send({error: e.message});
+  
+  next(e);
+}
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
