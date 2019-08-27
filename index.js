@@ -37,6 +37,16 @@ morgan.token('data', req => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - \
 :response-time ms :data'));
 
+const errorHandler = (e, req, res, next) => {
+  console.log(e);
+
+  if (e.name === 'CastError' && e.kind === 'ObjectId') {
+    return res.status(400).send({error: 'malformatted id'});
+  }
+  
+  next(e);
+}
+
 app.get('', (req, res) => {
   res.send('root');
 })
@@ -93,12 +103,14 @@ app.post('/api/persons', (req, res) => {
 });
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter(person => person.id !== id);
-  res.status(204).end();
-})
+  Person.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end();
+    })
+    .catch(e => next(e));
+});
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-})
+});
