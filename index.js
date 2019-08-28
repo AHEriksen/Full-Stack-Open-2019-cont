@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
+  require('dotenv').config();
 }
 const express = require('express');
 const app = express();
@@ -10,23 +10,23 @@ const Person = require('./models/person');
 
 let persons = [
   {
-    name: "Arto Hellas",
-    number: "040-123456",
+    name: 'Arto Hellas',
+    number: '040-123456',
     id: 1
   },
   {
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
+    name: 'Ada Lovelace',
+    number: '39-44-5323523',
     id: 2
   },
   {
-    name: "Dan Abramov",
-    number: "12-43-234345",
+    name: 'Dan Abramov',
+    number: '12-43-234345',
     id: 3
   },
   {
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
+    name: 'Mary Poppendieck',
+    number: '39-23-6423122',
     id: 4
   }
 ];
@@ -41,7 +41,7 @@ app.use(morgan(':method :url :status :res[content-length] - \
 
 app.get('', (req, res) => {
   res.send('root');
-})
+});
 
 app.get('/info', (req, res) => {
   const date = Date();
