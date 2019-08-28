@@ -145,7 +145,7 @@ const errorHandler = (e, req, res, next) => {
   }
   else if (e.name === 'ValidationError')
   {
-    return res.status(400).send({error: e.message, name: e.name});
+    return res.status(400).send({error: e});
   }
   
   next(e);
