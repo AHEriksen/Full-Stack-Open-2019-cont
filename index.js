@@ -1,4 +1,6 @@
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -81,7 +83,7 @@ const generateId = () => {
 
 app.post('/api/persons', (req, res, next) => {
   const body = req.body;
-  
+
   //const alreadyExists = persons.find(person => person.name === body.name);
   if (!body.name) {
     return res.status(422).json({error: 'name missing'});
